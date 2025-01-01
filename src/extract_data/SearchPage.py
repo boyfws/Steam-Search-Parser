@@ -6,7 +6,7 @@ class SteamSearchPageHtmlParser:
     @staticmethod
     def _extract_data(game: bs4.Tag) -> dict[str, str | list[str]]:
         game_data = {
-            "title": game.find('span', **{"class": "title"}).text.strip(),
+            "title": game.find('span', class_="title").text.strip(),
             "link": game['href'],
             "release_date": game.find('div', class_='search_released').text.strip()
         }
@@ -34,6 +34,6 @@ class SteamSearchPageHtmlParser:
         Обрабатывает данные со страницы с поиском
         """
         soup = BeautifulSoup(data, 'html.parser')
-        game_rows = soup.find_all('a', **{"class": 'search_result_row'})
+        game_rows = soup.find_all('a', class_='search_result_row')
 
         return [self._extract_data(el) for el in game_rows]

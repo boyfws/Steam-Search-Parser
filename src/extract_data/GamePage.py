@@ -7,12 +7,12 @@ class SteamGamePageHtmlParser:
     def _extract_dev_pub(soup: bs4.BeautifulSoup) -> dict[str, list[str]]:
         result_dict = {}
 
-        dev_rows = soup.find_all('div', **{"class": "dev_row"})
+        dev_rows = soup.find_all('div', class_="dev_row")
 
         for row in dev_rows:
             try:
-                subtitle = row.find('div', **{"class": "subtitle column"}).text.strip()
-                summary = row.find('div', **{"class": "summary column"}).text.strip()
+                subtitle = row.find('div', class_="subtitle column").text.strip()
+                summary = row.find('div', class_="summary column").text.strip()
                 link_tag = row.find('a')
 
                 if link_tag is None:

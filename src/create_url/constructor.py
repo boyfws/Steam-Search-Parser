@@ -10,7 +10,7 @@ class SteamUrlConstructor(SteamUrlParamManager):
         base_url += "&ignore_preferences=1"
         return base_url
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._url = self._prepare_base_url("https://store.steampowered.com/search/?")
 
         self._lang_converter = SupportedLangParam()
@@ -18,7 +18,7 @@ class SteamUrlConstructor(SteamUrlParamManager):
 
         self._page = -1
 
-        self._max_price = -1
+        self._max_price: int | str = -1
 
     def add_languages(self, lang: list[str]) -> "SteamUrlConstructor":
         """

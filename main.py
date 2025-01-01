@@ -40,7 +40,10 @@ class SteamParser:
 
         heapq.heappush(heap, (index, games_list))
 
-    async def parse(self, num_pages: int, languages: Optional[list[str]] = None, max_price: Optional[int | str] = None) -> list[
+    async def parse(self,
+                    num_pages: int,
+                    languages: Optional[list[str]] = None,
+                    max_price: Optional[int | str] = None) -> list[
         dict[str, str | list[str]]
     ]:
         url = SteamUrlConstructor()
@@ -51,7 +54,17 @@ class SteamParser:
         if max_price is not None:
             url.add_max_price(max_price)
 
-        heap = []
+        heap: list[
+                    tuple[
+                        int,
+                        list[
+                            dict[
+                                 str,
+                                 str | list[str]
+                                ]
+                            ]
+                            ]
+                    ] = []
         tasks = [self._process_parse(
             url=url.add_page(i).url,
             index=i,
@@ -65,3 +78,13 @@ class SteamParser:
             ret_array += result
 
         return ret_array
+
+
+async def test():
+    session = aiohttp.ClientSession()
+    a = SteamParser(session)
+    data = await a.parse(num_pages=10)
+    print(*data, sep="\n")
+    await session.close()
+
+asyncio.run(test())
