@@ -5,30 +5,21 @@ import heapq
 
 from src import *
 
-
+heap_type = list[
+    tuple[
+        int, list[dict[str,str | list[str]]]
+    ]
+]
 class SteamParser(ValidateSteamData):
-    def __init__(self, session: aiohttp.ClientSession):
-        self.session = session
-        # Прокидываем куки, чтобы избежать показа страницы с выбором возраста
-        self.session.cookie_jar.update_cookies({'birthtime': '283993201', 'mature_content': '1'})
-
+    def __init__(self):
+        self.session = None
         self._search_parser = SearchPageParser()
         self._game_parser = GamePageParser()
 
     async def _process_parse(self,
                              url: str,
                              index: int,
-                             heap: list[
-                                 tuple[
-                                     int,
-                                     list[
-                                         dict[
-                                             str,
-                                             str | list[str]
-                                            ]
-                                        ]
-                                    ]
-                            ]) -> None:
+                             heap: heap_type) -> None:
         html_parser = AsyncHTMLFetcher(session=self.session)
 
         async with html_parser.set_url(url) as search_html:
@@ -48,31 +39,31 @@ class SteamParser(ValidateSteamData):
                     max_price: Optional[int | str] = None) -> list[
         dict[str, str | list[str]]
     ]:
-        url = SteamUrlConstructor()
+        self.session = aiohttp.ClientSession()
 
-        if languages is not None:
-            url.add_languages(languages)
+        # Прокидываем куки, чтобы избежать показа страницы с выбором возраста
+        self.session.cookie_jar.update_cookies({'birthtime': '283993201', 'mature_content': '1'})
 
-        if max_price is not None:
-            url.add_max_price(max_price)
+        try:
+            url = SteamUrlConstructor()
 
-        heap: list[
-                    tuple[
-                        int,
-                        list[
-                            dict[
-                                 str,
-                                 str | list[str]
-                                ]
-                            ]
-                            ]
-                    ] = []
-        tasks = [self._process_parse(
-            url=url.add_page(i).url,
-            index=i,
-            heap=heap
-        ) for i in range(1, num_pages + 1)]
-        await asyncio.gather(*tasks)
+            if languages is not None:
+                url.add_languages(languages)
+
+            if max_price is not None:
+                url.add_max_price(max_price)
+
+            heap: heap_type = []
+
+            tasks = [self._process_parse(
+                url=url.add_page(i).url,
+                index=i,
+                heap=heap
+            ) for i in range(1, num_pages + 1)]
+            await asyncio.gather(*tasks)
+
+        finally:
+            await self.session.close()
 
         ret_array = []
         while heap:

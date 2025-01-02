@@ -33,8 +33,6 @@ class SteamGamePageHtmlParser:
             except (AttributeError, KeyError) as e:
                 continue
 
-        if result_dict == {}:
-            logger.error("Возникла ошибка при извлечении разработчика и издателя")
 
         return result_dict
 

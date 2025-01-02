@@ -1,3 +1,5 @@
+from .logger import logger
+
 from pydantic import BaseModel, field_validator, ValidationError
 from datetime import datetime, date
 from typing import Optional, Union
@@ -7,8 +9,8 @@ class ResponseFormat(BaseModel):
     title: str
     link: str
     release_date: date
-    final_price: int
-    original_price: Optional[int] = None
+    final_price: float
+    original_price: Optional[float] = None
 
     review_score: str
     positive_percentage: int
@@ -18,8 +20,8 @@ class ResponseFormat(BaseModel):
 
     developer: list[str]
     developer_link: list[str]
-    publisher: list[str]
-    publisher_link: list[str]
+    publisher: Optional[list[str]] = None
+    publisher_link: Optional[list[str]] = None
 
     tags: list[str]
 
@@ -28,7 +30,7 @@ class ResponseFormat(BaseModel):
         if value == "Free":
             return "0"
 
-        return value.split()[0]
+        return value.split()[0].replace(",", ".")
 
     @field_validator('release_date', mode='before')
     def parse_custom_date(cls, value: str) -> date:
@@ -41,17 +43,7 @@ class ResponseFormat(BaseModel):
         try:
             return datetime.strptime(value, "%b %Y").date()
         except ValueError:
-            raise ValidationError(
-                itle="Validation Error",
-                line_errors=[
-                {
-                    "type": "Value_error",
-                    "loc": ("release_date",),
-                    "msg": "Формат даты не подходит ни под один из ожидаемых",
-                    "input": value,
-                }
-                ],
-            )
+            return None
 
     @field_validator("positive_percentage", mode="before")
     def parse_percentage(cls, value: str) -> str:
@@ -77,14 +69,13 @@ class ValidateSteamData:
     def __conv_to_resp_format(
             el: dict[str, str | list[str]],
     ) -> Union["ResponseFormat", None]:
-        ret_dict = el
-        ret_dict.update(
-            ValidateSteamData.__extract_score(ret_dict["review_score"])
+        el.update(
+            ValidateSteamData.__extract_score(el["review_score"])
         )
         try:
-            return ResponseFormat(**ret_dict)
+            return ResponseFormat(**el)
         except ValidationError as e:
-            print(e)
+            logger.info(f"Произошла ошибка при валидации игры {el['title']} {el['link']}")
             return None
 
     @staticmethod
