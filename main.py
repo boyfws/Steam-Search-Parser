@@ -9,6 +9,8 @@ from src import *
 class SteamParser:
     def __init__(self, session: aiohttp.ClientSession):
         self.session = session
+        # Прокидываем куки, чтобы избежать показа страницы с выбором возраста
+        self.session.cookie_jar.update_cookies({'birthtime': '283993201', 'mature_content': '1'})
 
         self._search_parser = SearchPageParser()
         self._game_parser = GamePageParser()

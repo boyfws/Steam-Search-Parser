@@ -12,27 +12,25 @@ class SteamGamePageHtmlParser:
 
         for row in dev_rows:
             try:
-                subtitle = row.find('div', class_="subtitle column").text.strip()
-                summary = row.find('div', class_="summary column").text.strip()
-                link_tag = row.find('a')
+                subtitle_obj = row.find('div', class_="subtitle column")
 
-                if link_tag is None:
+                if subtitle_obj is None:
                     continue
 
-                try:
-                    link = link_tag['href']
-                except KeyError:
-                    link = ""
+                subtitle = subtitle_obj.text
+                summary = row.find('div', class_="summary column")
 
                 if subtitle == "Developer:":
-                    result_dict["developer"] = result_dict.get("developer", []) + [summary]
-                    result_dict["developer_link"] = result_dict.get("developer_link", []) + [link]
+                    for link_tag in summary.find_all('a'):
+                        result_dict["developer"] = result_dict.get("developer", []) + [link_tag.text.strip()]
+                        result_dict["developer_link"] = result_dict.get("developer_link", []) + [link_tag['href']]
 
-                if subtitle == "Publisher:":
-                    result_dict["publisher"] = result_dict.get("publisher", []) + [summary]
-                    result_dict["publisher_link"] = result_dict.get("publisher_link", []) + [link]
+                elif subtitle == "Publisher:":
+                    for link_tag in summary.find_all('a'):
+                        result_dict["publisher"] = result_dict.get("publisher", []) + [link_tag.text.strip()]
+                        result_dict["publisher_link"] = result_dict.get("publisher_link", []) + [link_tag['href']]
 
-            except AttributeError:
+            except (AttributeError, KeyError) as e:
                 continue
 
         if result_dict == {}:
