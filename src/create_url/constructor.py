@@ -5,7 +5,7 @@ from .param_manager import SteamUrlParamManager
 class SteamUrlConstructor(SteamUrlParamManager):
     @staticmethod
     def _prepare_base_url(base_url: str) -> str:
-        base_url += "filter=popularnew"
+        #base_url += "filter=popularnew"
         base_url += "&ndl=1"
         base_url += "&ignore_preferences=1"
         return base_url
