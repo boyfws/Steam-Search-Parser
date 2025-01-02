@@ -6,7 +6,7 @@ import heapq
 from src import *
 
 
-class SteamParser:
+class SteamParser(ValidateSteamData):
     def __init__(self, session: aiohttp.ClientSession):
         self.session = session
         # Прокидываем куки, чтобы избежать показа страницы с выбором возраста
@@ -79,4 +79,4 @@ class SteamParser:
             _, result = heapq.heappop(heap)
             ret_array += result
 
-        return ret_array
+        return self._validate_data(data=ret_array)
