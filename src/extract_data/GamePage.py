@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 import bs4
+from ..logger import logger
 
 
 class SteamGamePageHtmlParser:
@@ -34,13 +35,20 @@ class SteamGamePageHtmlParser:
             except AttributeError:
                 continue
 
+        if result_dict == {}:
+            logger.error("Возникла ошибка при извлечении разработчика и издателя")
+
         return result_dict
 
     @staticmethod
     def _extract_tags(soup: bs4.BeautifulSoup) -> dict[str, list[str]]:
         tags = soup.find_all('a', class_='app_tag')
+        try:
+            tag_names = [tag.get_text(strip=True) for tag in tags if tag.get_text(strip=True) != "+"]
 
-        tag_names = [tag.get_text(strip=True) for tag in tags if tag.get_text(strip=True) != "+"]
+        except AttributeError:
+            logger.error("Возникла ошибка при извлечении категорий")
+            return {}
 
         return {"tags": tag_names}
 

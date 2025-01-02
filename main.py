@@ -78,13 +78,3 @@ class SteamParser:
             ret_array += result
 
         return ret_array
-
-
-async def test():
-    session = aiohttp.ClientSession()
-    a = SteamParser(session)
-    data = await a.parse(num_pages=10)
-    print(*data, sep="\n")
-    await session.close()
-
-asyncio.run(test())
