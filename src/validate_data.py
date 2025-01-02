@@ -74,7 +74,7 @@ class ValidateSteamData:
         )
         try:
             return ResponseFormat(**el)
-        except ValidationError as e:
+        except (ValidationError, KeyError) as e:
             logger.info(f"Произошла ошибка при валидации игры {el['title']} {el['link']}")
             return None
 

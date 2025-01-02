@@ -22,7 +22,7 @@ class AsyncHTMLFetcher:
         except aiohttp.ClientError as e:
             error_type = type(e).__name__
             error_message = str(e)
-            url = self._url,
+            url = self._url
             logger.error(f"Возникла ошибка при получении html по url: {url} - {error_type}: {error_message}")
 
     async def __aexit__(self, exc_type, exc_val, exc_tb) -> bool:
