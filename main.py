@@ -1,6 +1,6 @@
 import asyncio
 import aiohttp
-from typing import Optional
+from typing import Optional, cast
 import heapq
 from typing import Any
 
@@ -40,7 +40,8 @@ class SteamParser(ValidateSteamData):
 
             for i in range(len(games_list)):
 
-                async with html_parser.set_url(games_list[i]["link"]) as game_html:
+                link = cast(str, games_list[i]["link"])  # Приводим тип к str
+                async with html_parser.set_url(link) as game_html:
 
                     if game_html is None:
                         continue
