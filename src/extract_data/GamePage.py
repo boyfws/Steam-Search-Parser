@@ -33,7 +33,6 @@ class SteamGamePageHtmlParser:
             except (AttributeError, KeyError) as e:
                 continue
 
-
         return result_dict
 
     @staticmethod

@@ -69,11 +69,12 @@ class ValidateSteamData:
     def __conv_to_resp_format(
             el: dict[str, str | list[str]],
     ) -> Union["ResponseFormat", None]:
-        el.update(
-            ValidateSteamData.__extract_score(el["review_score"])
-        )
         try:
+            el.update(
+                ValidateSteamData.__extract_score(el["review_score"])
+            )
             return ResponseFormat(**el)
+
         except (ValidationError, KeyError) as e:
             logger.info(f"Произошла ошибка при валидации игры {el['title']} {el['link']}")
             return None
