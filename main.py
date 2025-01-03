@@ -4,7 +4,14 @@ from typing import Optional
 import heapq
 from typing import Any
 
-from src import *
+from src import (
+    ValidateSteamData,
+    SearchPageParser,
+    GamePageParser,
+    AsyncHTMLFetcher,
+    SteamUrlConstructor,
+)
+
 
 heap_type = list[
     tuple[
