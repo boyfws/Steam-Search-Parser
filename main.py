@@ -10,6 +10,7 @@ from src import (
     GamePageParser,
     AsyncHTMLFetcher,
     SteamUrlConstructor,
+    SessionManager
 )
 
 
@@ -20,7 +21,7 @@ heap_type = list[
 ]
 
 
-class SteamParser(ValidateSteamData):
+class SteamParser(ValidateSteamData, SessionManager):
     def __init__(self) -> None:
         self._search_parser = SearchPageParser()
         self._game_parser = GamePageParser()
@@ -57,10 +58,7 @@ class SteamParser(ValidateSteamData):
                     max_price: Optional[int | str] = None) -> list[
         dict[str, Any]
     ]:
-        session = aiohttp.ClientSession()
-
-        # Прокидываем куки, чтобы избежать показа страницы с выбором возраста
-        session.cookie_jar.update_cookies({'birthtime': '283993201', 'mature_content': '1'})
+        session = await self.prepare_session()
 
         try:
             url = SteamUrlConstructor()
