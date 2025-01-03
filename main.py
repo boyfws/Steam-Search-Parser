@@ -14,7 +14,7 @@ heap_type = list[
 
 
 class SteamParser(ValidateSteamData):
-    def __init__(self):
+    def __init__(self) -> None:
         self._search_parser = SearchPageParser()
         self._game_parser = GamePageParser()
 

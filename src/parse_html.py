@@ -19,7 +19,7 @@ class AsyncHTMLFetcher:
         self._url = url
         return self
 
-    async def __aenter__(self) -> str:
+    async def __aenter__(self) -> str | None:
         if self._url is None:
             raise ValueError("Не передан URL для возврата HTML")
         try:
@@ -32,6 +32,7 @@ class AsyncHTMLFetcher:
             error_message = str(e)
             url = self._url
             logger.error(f"Возникла ошибка при получении html по url: {url} - {error_type}: {error_message}")
+            return None
 
     async def __aexit__(
             self,
