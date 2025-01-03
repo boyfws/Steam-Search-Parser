@@ -19,5 +19,15 @@ async def test_def_state(num_pages):
             assert len(el["publisher"]) == len(el["publisher_link"])
 
 
+@pytest.mark.parametrize("num_pages", [1, 3, 5, 10])
+@pytest.mark.asyncio
+async def test_hide_free_to_play_games(num_pages):
+    data = await SteamParser().parse(num_pages=num_pages, hide_free_to_play=True)
+
+    for el in data:
+        assert el["final_price"] > 0
+
+
+
 
 

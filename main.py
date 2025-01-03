@@ -26,6 +26,24 @@ class SteamParser(ValidateSteamData, SessionManager):
         self._search_parser = SearchPageParser()
         self._game_parser = GamePageParser()
 
+    @staticmethod
+    def _prepare_url(languages: list[str],
+                    max_price: int | str,
+                    hide_free_to_play: bool) -> "SteamUrlConstructor":
+        url = SteamUrlConstructor()
+
+        url = url.add_hide_free_to_play(
+            hide_free_to_play
+        )
+
+        if languages is not None:
+            url.add_languages(languages)
+
+        if max_price is not None:
+            url.add_max_price(max_price)
+
+        return url
+
     async def _process_parse(self,
                              url: str,
                              index: int,
@@ -55,19 +73,18 @@ class SteamParser(ValidateSteamData, SessionManager):
     async def parse(self,
                     num_pages: int,
                     languages: Optional[list[str]] = None,
-                    max_price: Optional[int | str] = None) -> list[
+                    max_price: Optional[int | str] = None,
+                    hide_free_to_play: Optional[bool] = False) -> list[
         dict[str, Any]
     ]:
         session = await self.prepare_session()
 
         try:
-            url = SteamUrlConstructor()
-
-            if languages is not None:
-                url.add_languages(languages)
-
-            if max_price is not None:
-                url.add_max_price(max_price)
+            url = self._prepare_url(
+                languages=languages,
+                max_price=max_price,
+                hide_free_to_play=hide_free_to_play
+            )
 
             heap: heap_type = []
 
@@ -89,3 +106,8 @@ class SteamParser(ValidateSteamData, SessionManager):
             ret_array += result
 
         return self._validate_data(data=ret_array)
+
+    @staticmethod
+    def get_supported_lang() -> list[str]:
+        return SteamUrlConstructor().get_supported_lang()
+

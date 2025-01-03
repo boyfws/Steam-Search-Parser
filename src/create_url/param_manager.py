@@ -17,3 +17,7 @@ class SteamUrlParamManager:
         max_price_string = ""
         max_price_string += f"&maxprice={max_price}"
         return max_price_string
+
+    @staticmethod
+    def _add_32play_flag() -> str:
+        return "&hidef2p=1"

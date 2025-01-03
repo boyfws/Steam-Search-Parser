@@ -20,6 +20,8 @@ class SteamUrlConstructor(SteamUrlParamManager):
 
         self._max_price: int | str = -1
 
+        self.hide32play = False
+
     def add_languages(self, lang: list[str]) -> "SteamUrlConstructor":
         """
         Добавление языка в ссылку
@@ -68,6 +70,18 @@ class SteamUrlConstructor(SteamUrlParamManager):
 
         return self
 
+    def add_hide_free_to_play(self, hide: bool = False) -> "SteamUrlConstructor":
+        if isinstance(hide, bool):
+            self.hide32play = hide
+        else:
+            raise ValueError("Флаг должен быть bool")
+
+        return self
+
+    def get_supported_lang(self) -> list[str]:
+        return self._lang_converter.get_supported_lang()
+
+
     @property
     def url(self) -> str:
         """
@@ -83,5 +97,8 @@ class SteamUrlConstructor(SteamUrlParamManager):
 
         if self._max_price != -1:
             url += self._add_max_price_to_url(self._max_price)
+
+        if self.hide32play:
+            url += self._add_32play_flag()
 
         return url
