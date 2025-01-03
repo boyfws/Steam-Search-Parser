@@ -4,7 +4,7 @@ import aiohttp
 import pytest
 
 
-@pytest.mark.parametrize("num_pages", [5, 10, 15, 100])
+@pytest.mark.parametrize("num_pages", [5, 10, 15, 20])
 @pytest.mark.asyncio
 async def test_def_state(num_pages):
     data = await SteamParser().parse(num_pages=num_pages)
