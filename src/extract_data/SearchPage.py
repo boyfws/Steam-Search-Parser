@@ -27,7 +27,7 @@ class SteamSearchPageHtmlParser:
 
         review_score = game.find('span', class_='search_review_summary')
         if review_score and isinstance(review_score, bs4.Tag):
-            game_data["review_score"] = review_score.get("data-tooltip-html")
+            game_data["review_score"] = review_score.get("data-tooltip-html", "")
 
         platforms = game.find_all('span', class_='platform_img')
         game_data["platforms"] = [platform['class'][1] for platform in platforms]  # win, mac, linux

@@ -1,8 +1,16 @@
 import aiohttp
+from types import TracebackType
+from typing import Optional, Type, TypeVar
+
 from .logger import logger
+
+_ExcType = TypeVar('_ExcType', bound=BaseException)
 
 
 class AsyncHTMLFetcher:
+    _url: None | str
+    session: aiohttp.ClientSession
+
     def __init__(self, session: aiohttp.ClientSession) -> None:
         self.session = session
         self._url = None
@@ -25,5 +33,10 @@ class AsyncHTMLFetcher:
             url = self._url
             logger.error(f"Возникла ошибка при получении html по url: {url} - {error_type}: {error_message}")
 
-    async def __aexit__(self, exc_type, exc_val, exc_tb) -> bool:
+    async def __aexit__(
+            self,
+            exc_type: Optional[Type[_ExcType]],
+            exc_val: Optional[_ExcType],
+            exc_tb: Optional[TracebackType]
+    ) -> bool:
         return False
