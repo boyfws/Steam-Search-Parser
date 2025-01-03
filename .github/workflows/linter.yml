@@ -24,4 +24,4 @@ jobs:
       run: pip install mypy 
 
     - name: Run linter test
-      run: mypy . --strict --exclude "./test/"
+      run: mypy . --strict --exclude "./test/" --install-types
