@@ -87,7 +87,7 @@ class SteamParser(ValidateSteamData, SessionManager):
                     add_to_url: Optional[str] = "") -> list[
         dict[str, Any]
     ]:
-        """Асинхронная функция для парсинга игр из Steam.
+        """Асинхронный метод для парсинга игр из Steam.
 
          Выполняет асинхронный парсинг страницы для поиска игр в Steam с учетом фильтров.
          Открывает новую aiohttp сессию для выполнения запросов.
