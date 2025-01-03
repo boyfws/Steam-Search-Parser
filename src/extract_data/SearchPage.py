@@ -3,8 +3,15 @@ import bs4
 
 
 class SteamSearchPageHtmlParser:
+    """
+    Класс для извлечения данных из html страницы поиска
+    """
+
     @staticmethod
     def _extract_data(game: bs4.Tag) -> dict[str, str | list[str]]:
+        """
+        Обрабатывает данные об одной игре
+        """
         game_data = {
             "link": game['href'],
         }

@@ -22,6 +22,9 @@ heap_type = list[
 
 
 class SteamParser(ValidateSteamData, SessionManager):
+    """
+    Класс для парсинга данных из поиска steam
+    """
     def __init__(self) -> None:
         self._search_parser = SearchPageParser()
         self._game_parser = GamePageParser()
@@ -30,6 +33,9 @@ class SteamParser(ValidateSteamData, SessionManager):
     def _prepare_url(languages: list[str],
                     max_price: int | str,
                     hide_free_to_play: bool) -> "SteamUrlConstructor":
+        """
+        Готовит url на основе переданных параметров с помощью класса SteamUrlConstructor
+        """
         url = SteamUrlConstructor()
 
         url = url.add_hide_free_to_play(
@@ -49,6 +55,9 @@ class SteamParser(ValidateSteamData, SessionManager):
                              index: int,
                              heap: heap_type,
                              session: aiohttp.ClientSession) -> None:
+        """
+        Выполняет парсинг всех игр и их страниц для определенной страницы с играми из поиска
+        """
         html_parser = AsyncHTMLFetcher(session=session)
 
         async with html_parser.set_url(url) as search_html:
@@ -74,9 +83,61 @@ class SteamParser(ValidateSteamData, SessionManager):
                     num_pages: int,
                     languages: Optional[list[str]] = None,
                     max_price: Optional[int | str] = None,
-                    hide_free_to_play: Optional[bool] = False) -> list[
+                    hide_free_to_play: Optional[bool] = False,
+                    add_to_url: Optional[str] = "") -> list[
         dict[str, Any]
     ]:
+        """Асинхронная функция для парсинга игр из Steam.
+
+         Выполняет асинхронный парсинг страницы для поиска игр в Steam с учетом фильтров.
+         Открывает новую aiohttp сессию для выполнения запросов.
+
+         Parameters
+         ----------
+         num_pages : int
+             Количество страниц для парсинга (на одной странице 25 игр).
+         languages : Optional[list[str]]
+             Список поддерживаемых языков для игр. Возможные значения получаются из метода `get_supported_lang`.
+         max_price : Optional[int | str]
+             Максимальная цена игры. Может быть целым числом или 'free'.
+         hide_free_to_play : Optional[bool]
+             Флаг для скрытия бесплатных игр.
+         add_to_url : Optional[str]
+             Строка, которая будет добавлена к сформированному URL.
+
+         Returns
+         -------
+         list[dict]
+             Список словарей с информацией о играх. Каждый словарь содержит следующие поля:
+             - title : str
+                 Название игры.
+             - link : str
+                 Ссылка на игру.
+             - release_date : str
+                 Дата выпуска игры.
+             - final_price : float
+                 Итоговая цена.
+             - original_price : float
+                 Изначальная цена (если была).
+             - review_score : str
+                 Оценка игры текстом.
+             - positive_percentage : int
+                 Процент положительных отзывов.
+             - num_rev : int
+                 Количество отзывов.
+             - platforms : list[str]
+                 Список платформ, на которых поддерживается игра.
+             - developer : list[str]
+                 Список разработчиков.
+             - developer_link : list[str]
+                 Список ссылок на страницы разработчиков.
+             - publisher : list[str]
+                 Список издателей.
+             - publisher_link : list[str]
+                 Список ссылок на страницы издателей.
+             - tags : list[str]
+                 Список категорий, к которым принадлежит игра.
+         """
         session = await self.prepare_session()
 
         try:
@@ -89,7 +150,7 @@ class SteamParser(ValidateSteamData, SessionManager):
             heap: heap_type = []
 
             tasks = [self._process_parse(
-                url=url.add_page(i).url,
+                url=url.add_page(i).url + add_to_url,
                 index=i,
                 heap=heap,
                 session=session
@@ -109,5 +170,13 @@ class SteamParser(ValidateSteamData, SessionManager):
 
     @staticmethod
     def get_supported_lang() -> list[str]:
+        """Возвращает список поддерживаемых языков для фильтрации игр в Steam.
+
+        Данная функция использует метод `get_supported_lang` из класса `SteamUrlConstructor`
+        для получения списка языков, которые поддерживаются Steam для фильтрации игр.
+
+        Returns:
+            list[str]: Список строк, где каждая строка представляет собой название языка
+        """
         return SteamUrlConstructor().get_supported_lang()
 

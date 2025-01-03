@@ -4,8 +4,14 @@ from ..logger import logger
 
 
 class SteamGamePageHtmlParser:
+    """
+    Класс для извлечения данных из страницы игры
+    """
     @staticmethod
     def _extract_dev_pub(soup: bs4.BeautifulSoup) -> dict[str, list[str]]:
+        """
+        Извлекает разработчка и издателя из страницы с игрой
+        """
         result_dict: dict[str, list[str]] = {}
 
         dev_rows = soup.find_all('div', class_="dev_row")
@@ -37,6 +43,9 @@ class SteamGamePageHtmlParser:
 
     @staticmethod
     def _extract_tags(soup: bs4.BeautifulSoup) -> dict[str, list[str]]:
+        """
+        Извлекает теги из страницы с игрой
+        """
         tags = soup.find_all('a', class_='app_tag')
         try:
             tag_names = [tag.get_text(strip=True) for tag in tags if tag.get_text(strip=True) != "+"]
@@ -50,6 +59,9 @@ class SteamGamePageHtmlParser:
     def parse(self, data: str) -> dict[
         str, list[str]
     ]:
+        """
+        Парсит данные из страницы с игрой
+        """
         result_dict = {}
         soup = BeautifulSoup(data, 'html.parser')
 

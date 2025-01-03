@@ -1,4 +1,7 @@
 class SteamUrlParamManager:
+    """
+    Отвечает за добавление параметров в URL
+    """
     @staticmethod
     def _add_lang_to_url(lang_params: list[str]) -> str:
         lang_string = ""

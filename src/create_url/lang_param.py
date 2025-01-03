@@ -1,6 +1,6 @@
 class SupportedLangParam:
     """
-    Отвечает за конвертацию языков в URL
+    Отвечает за конвертацию языков мз названий в параметры для URL
     """
     def __init__(self) -> None:
         self._conv_dict = {

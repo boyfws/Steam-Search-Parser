@@ -8,6 +8,9 @@ _ExcType = TypeVar('_ExcType', bound=BaseException)
 
 
 class AsyncHTMLFetcher:
+    """
+    Класс предоставляющий контекстный менеджер для получения html внутри него
+    """
     _url: None | str
     session: aiohttp.ClientSession
 
@@ -16,10 +19,16 @@ class AsyncHTMLFetcher:
         self._url = None
 
     def set_url(self, url: str) -> "AsyncHTMLFetcher":
+        """
+        Устанавливает url для предоставления html
+        """
         self._url = url
         return self
 
     async def __aenter__(self) -> str | None:
+        """
+        Открывает контекстный менеджер, который предоставляет html
+        """
         if self._url is None:
             raise ValueError("Не передан URL для возврата HTML")
         try:

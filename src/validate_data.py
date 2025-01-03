@@ -56,8 +56,14 @@ class ResponseFormat(BaseModel):
 
 
 class ValidateSteamData:
+    """
+    Класс-валидатор для полученных от парсера данных
+    """
     @staticmethod
     def __extract_score(score: str) -> dict[str, str]:
+        """
+        Распаковывает строку с рейтингом игры
+        """
         score_split = score.split("<br>")
         game_score = score_split[0].strip()
         positive_percentage = score_split[1].split(" ")[0].strip()
@@ -70,6 +76,10 @@ class ValidateSteamData:
     def __conv_to_resp_format(
             el: dict[str, str | list[str]],
     ) -> Union["ResponseFormat", None]:
+        """
+        Преобразует один элемент возвращаемый парсером в ResponseFormat для валидации и
+        конвертирует его в словарь
+        """
         try:
             if isinstance(el["review_score"], list):
                 return None
@@ -91,6 +101,9 @@ class ValidateSteamData:
             ],
             included_fields: Optional[list[str]] = None
     ) -> list[dict[str, Any]]:
+        """
+        Валидирует входные данные от парсера
+        """
         ret_array_iter = (ValidateSteamData.__conv_to_resp_format(el) for el in data)
 
         included_fields_set = None

@@ -3,8 +3,14 @@ from .param_manager import SteamUrlParamManager
 
 
 class SteamUrlConstructor(SteamUrlParamManager):
+    """
+    Класс отвечающий за создание ссылки для парсинга
+    """
     @staticmethod
     def _prepare_base_url(base_url: str) -> str:
+        """
+        Вносит стартовые параметры в url
+        """
         #base_url += "filter=popularnew"
         base_url += "&ndl=1"
         base_url += "&ignore_preferences=1"
@@ -71,6 +77,9 @@ class SteamUrlConstructor(SteamUrlParamManager):
         return self
 
     def add_hide_free_to_play(self, hide: bool = False) -> "SteamUrlConstructor":
+        """
+        Добавляет флаг для скрытия бесплатных игр
+        """
         if isinstance(hide, bool):
             self.hide32play = hide
         else:
@@ -79,6 +88,9 @@ class SteamUrlConstructor(SteamUrlParamManager):
         return self
 
     def get_supported_lang(self) -> list[str]:
+        """
+        Возвращает список доступных языков
+        """
         return self._lang_converter.get_supported_lang()
 
 
