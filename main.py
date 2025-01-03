@@ -1,6 +1,6 @@
 import asyncio
 import aiohttp
-from typing import Optional, cast
+from typing import Optional, cast, Union
 import heapq
 from typing import Any
 
@@ -30,8 +30,8 @@ class SteamParser(ValidateSteamData, SessionManager):
         self._game_parser = GamePageParser()
 
     @staticmethod
-    def _prepare_url(languages: list[str],
-                    max_price: int | str,
+    def _prepare_url(languages: Union[list[str], None],
+                    max_price: Union[int, str, None],
                     hide_free_to_play: bool) -> "SteamUrlConstructor":
         """
         Готовит url на основе переданных параметров с помощью класса SteamUrlConstructor
@@ -81,10 +81,11 @@ class SteamParser(ValidateSteamData, SessionManager):
 
     async def parse(self,
                     num_pages: int,
+                    hide_free_to_play: bool = False,
+                    add_to_url: str = "",
                     languages: Optional[list[str]] = None,
                     max_price: Optional[int | str] = None,
-                    hide_free_to_play: Optional[bool] = False,
-                    add_to_url: Optional[str] = "") -> list[
+                    ) -> list[
         dict[str, Any]
     ]:
         """Асинхронный метод для парсинга игр из Steam.
