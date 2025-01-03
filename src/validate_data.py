@@ -33,7 +33,7 @@ class ResponseFormat(BaseModel):
         return value.split()[0].replace(",", ".")
 
     @field_validator('release_date', mode='before')
-    def parse_custom_date(cls, value: str) -> date:
+    def parse_custom_date(cls, value: str) -> date | None:
         try:
             return datetime.strptime(value, "%d %b, %Y").date()
         except ValueError:
@@ -70,10 +70,14 @@ class ValidateSteamData:
             el: dict[str, str | list[str]],
     ) -> Union["ResponseFormat", None]:
         try:
+            if isinstance(el["review_score"], list):
+                return None
+
             el.update(
                 ValidateSteamData.__extract_score(el["review_score"])
             )
-            return ResponseFormat(**el)
+            # Мы прокидываем ингор, так как функция данной строчки конвертация типов
+            return ResponseFormat(**el)  # type: ignore
 
         except (ValidationError, KeyError) as e:
             logger.info(f"Произошла ошибка при валидации игры {el['title']} {el['link']}")
