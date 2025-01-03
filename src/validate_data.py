@@ -1,7 +1,7 @@
 from .logger import logger
 
 from pydantic import BaseModel, field_validator, ValidationError
-from pydantic.typing import ModelDict
+from typing import Any
 from datetime import datetime, date
 from typing import Optional, Union
 
@@ -90,9 +90,7 @@ class ValidateSteamData:
                 dict[str, str | list[str]]
             ],
             included_fields: Optional[list[str]] = None
-    ) -> list[
-        ModelDict[ResponseFormat]
-    ]:
+    ) -> list[dict[str, Any]]:
         ret_array_iter = (ValidateSteamData.__conv_to_resp_format(el) for el in data)
 
         included_fields_set = None

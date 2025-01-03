@@ -6,10 +6,16 @@ class SteamSearchPageHtmlParser:
     @staticmethod
     def _extract_data(game: bs4.Tag) -> dict[str, str | list[str]]:
         game_data = {
-            "title": game.find('span', class_="title").text.strip(),
             "link": game['href'],
-            "release_date": game.find('div', class_='search_released').text.strip()
         }
+
+        title = game.find('span', class_="title")
+        if title:
+            game_data["title"] = title.text.strip()
+
+        release_date = game.find('div', class_='search_released')
+        if release_date:
+            game_data["release_date"] = release_date.text.strip()
 
         original_price = game.find('div', class_='discount_original_price')
         if original_price:

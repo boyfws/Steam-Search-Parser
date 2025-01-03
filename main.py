@@ -2,6 +2,7 @@ import asyncio
 import aiohttp
 from typing import Optional
 import heapq
+from typing import Any
 
 from src import *
 
@@ -46,7 +47,7 @@ class SteamParser(ValidateSteamData):
                     num_pages: int,
                     languages: Optional[list[str]] = None,
                     max_price: Optional[int | str] = None) -> list[
-        dict[str, str | list[str]]
+        dict[str, Any]
     ]:
         session = aiohttp.ClientSession()
 
