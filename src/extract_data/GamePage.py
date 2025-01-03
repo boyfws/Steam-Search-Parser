@@ -6,7 +6,7 @@ from ..logger import logger
 class SteamGamePageHtmlParser:
     @staticmethod
     def _extract_dev_pub(soup: bs4.BeautifulSoup) -> dict[str, list[str]]:
-        result_dict = {}
+        result_dict: dict[str, list[str]] = {}
 
         dev_rows = soup.find_all('div', class_="dev_row")
 
@@ -48,7 +48,7 @@ class SteamGamePageHtmlParser:
         return {"tags": tag_names}
 
     def parse(self, data: str) -> dict[
-        str, str | list[str]
+        str, list[str]
     ]:
         result_dict = {}
         soup = BeautifulSoup(data, 'html.parser')
